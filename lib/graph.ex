@@ -578,14 +578,16 @@ defmodule Graph do
     vs = vertices(g)
 
     ## find all cycles
-    cycles = vs
-    |> Enum.map(&get_cycle(g, &1))
-    |> Enum.filter(&Function.identity/1)
+    cycles =
+      vs
+      |> Enum.map(&get_cycle(g, &1))
+      |> Enum.filter(&Function.identity/1)
 
     ## remove duplicate cycles
-    {cycles, _} = Enum.reduce(cycles, {[], []},
-      fn cycle, {cycles_acc, edgeset_acc} ->
+    {cycles, _} =
+      Enum.reduce(cycles, {[], []}, fn cycle, {cycles_acc, edgeset_acc} ->
         edgeset = MapSet.new(cycle)
+
         if Enum.member?(edgeset_acc, edgeset) do
           {cycles_acc, edgeset_acc}
         else
