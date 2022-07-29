@@ -572,6 +572,30 @@ defmodule Graph do
     end
   end
 
+  def all_cycles(%__MODULE__ = g) do
+    ## TODO there is probably a *much* more efficient way to do this
+
+    vs = vertices(g)
+
+    ## find all cycles
+    cycles = vs
+    |> Enum.map(&get_cycle(g, &1))
+    |> Enum.filter(&Function.identity/1)
+
+    ## remove duplicate cycles
+    {cycles, _} = Enum.reduce(cycles, {[], []},
+      fn cycle, {cycles_acc, edgeset_acc} ->
+        edgeset = MapSet.new(cycle)
+        if Enum.member?(edgeset_acc, edgeset) do
+          {cycles_acc, edgeset_acc}
+        else
+          {[cycle | cycles_acc], [edgeset | edgeset_acc]}
+        end
+      end)
+
+    cycles
+  end
+
   @spec rm_edges(t, [vertex_id]) :: t
   defp rm_edges(%__MODULE__{edges: edges} = g, [v1, v2 | vs]) do
     edge_ids =
