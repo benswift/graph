@@ -572,7 +572,7 @@ defmodule Graph do
     end
   end
 
-  def all_cycles(%__MODULE__ = g) do
+  def all_cycles(%__MODULE__{} = g) do
     ## TODO there is probably a *much* more efficient way to do this
 
     vs = vertices(g)
